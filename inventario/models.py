@@ -32,3 +32,21 @@ class Producto(models.Model):
 
     def __str__(self):
         return f"{self.nombre} ({self.marca.nombre})"
+    
+    # AGREGA ESTO AL FINAL DE TU INVENTARIO/MODELS.PY
+
+class HistorialStock(models.Model):
+    TIPO_MOVIMIENTO = [
+        ('ENTRADA', '➕ Entrada (Compra / Reabastecimiento)'),
+        ('SALIDA', '➖ Salida (Venta / Ajuste)'),
+    ]
+
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE, related_name='movimientos')
+    tipo = models.CharField(max_length=10, choices=TIPO_MOVIMIENTO)
+    cantidad = models.IntegerField()
+    motivo = models.CharField(max_length=255, help_text="Ej: Venta de mostrador, Compra a proveedor")
+    fecha = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.tipo} - {self.producto.nombre} ({self.cantidad} uds)"
+

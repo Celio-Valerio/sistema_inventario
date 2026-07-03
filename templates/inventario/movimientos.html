@@ -1,0 +1,50 @@
+{% extends 'inventario/base.html' %}
+
+{% block title %}Movimientos - Sistema de Inventario Celio{% endblock %}
+
+{% block active_movimientos %}active{% endblock %}
+
+{% block content %}
+<div class="header-section" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+    <h2 class="page-title" style="font-size: 1.75rem; color: #495057; font-weight: 600;">🔄 Historial de Entradas y Salidas</h2>
+</div>
+
+<div class="data-card" style="background: #fff; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); padding: 25px;">
+    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+        <thead>
+            <tr style="background-color: #f8f9fa; color: #6c757d; font-size: 0.85rem; text-transform: uppercase;">
+                <th style="padding: 12px 15px;">Fecha / Hora</th>
+                <th style="padding: 12px 15px;">Producto</th>
+                <th style="padding: 12px 15px;">Tipo</th>
+                <th style="padding: 12px 15px;">Cantidad</th>
+                <th style="padding: 12px 15px;">Motivo / Detalle</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for mov in movimientos %}
+            <tr style="border-bottom: 1px solid #dee2e6;">
+                <td style="padding: 12px 15px; color: #6c757d; font-size: 0.9rem;">{{ mov.fecha|date:"d/m/Y H:i" }}</td>
+                <td style="padding: 12px 15px; font-weight: bold;">{{ mov.producto.nombre }}</td>
+                <td style="padding: 12px 15px;">
+                    {% if mov.tipo == 'ENTRADA' %}
+                        <span class="badge badge-success" style="background-color: #d1e7dd; color: #0f5132; padding: 5px 10px; font-size: 0.75rem; font-weight: bold; border-radius: 50px;">ENTRADA</span>
+                    {% else %}
+                        <span class="badge badge-danger" style="background-color: #f8d7da; color: #842029; padding: 5px 10px; font-size: 0.75rem; font-weight: bold; border-radius: 50px;">SALIDA</span>
+                    {% endif %}
+                </td>
+                <td style="padding: 12px 15px; font-weight: 600; {% if mov.tipo == 'ENTRADA' %}color: #198754;{% else %}color: #dc3545;{% endif %}">
+                    {% if mov.tipo == 'ENTRADA' %}+{% else %}-{% endif %}{{ mov.cantidad }} uds
+                </td>
+                <td style="padding: 12px 15px; color: #495057;">{{ mov.motivo }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="text-align: center; color: #777; padding: 30px 0;">
+                    No hay registros de movimientos en la base de datos.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

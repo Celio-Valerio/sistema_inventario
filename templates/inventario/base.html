@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sistema de Inventario Celio{% endblock %}</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: #f4f6f9; color: #333; }
+        .navbar { background-color: #212529; color: #fff; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .navbar-brand { font-size: 1.25rem; font-weight: bold; text-decoration: none; color: #fff; }
+        .container { display: flex; padding: 30px; gap: 30px; }
+        .sidebar { width: 20%; background: #fff; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); overflow: hidden; height: fit-content; }
+        .list-group-item { display: block; padding: 12px 20px; color: #495057; text-decoration: none; border-bottom: 1px solid #dee2e6; transition: 0.3s; }
+        .list-group-item:hover { background-color: #f8f9fa; color: #0d6efd; }
+        .list-group-item.active { background-color: #0d6efd; color: #fff; font-weight: bold; }
+        .main-content { width: 80%; }
+        
+        /* Estilos comunes compartidos */
+        .header-section { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .page-title { font-size: 1.75rem; color: #495057; font-weight: 600; }
+        .data-card { background: #fff; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); padding: 25px; }
+        
+        /* Badges de tu diseño */
+        .badge { display: inline-block; padding: 5px 10px; font-size: 0.75rem; font-weight: bold; border-radius: 50px; }
+        .badge-success { background-color: #d1e7dd; color: #0f5132; }
+        .badge-danger { background-color: #f8d7da; color: #842029; }
+        .badge-secondary { background-color: #e2e3e5; color: #41464b; }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+    <nav class="navbar">
+        <a class="navbar-brand" href="{% url 'inventario:dashboard' %}">📦 Inventario Celio</a>
+        <div>👤 Administrador</div>
+    </nav>
+
+    <div class="container">
+        <!-- Menú Lateral Dinámico y Fijo -->
+        <div class="sidebar">
+            <a href="{% url 'inventario:dashboard' %}" class="list-group-item {% block active_dashboard %}{% endblock %}">📊 Dashboard</a>
+            <a href="{% url 'inventario:productos_list' %}" class="list-group-item {% block active_productos %}{% endblock %}">👟 Productos</a>
+            <a href="{% url 'inventario:marcas_list' %}" class="list-group-item {% block active_marcas %}{% endblock %}">🏷️ Marcas</a>
+            <a href="{% url 'inventario:categorias_list' %}" class="list-group-item {% block active_categorias %}{% endblock %}">🗂️ Categorías</a>
+            <a href="{% url 'inventario:movimientos_list' %}" class="list-group-item {% block active_movimientos %}{% endblock %}">🔄 Movimientos</a>
+        </div>
+
+        <!-- Contenido Dinámico -->
+        <div class="main-content">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+
+</body>
+</html>
+
+

@@ -1,0 +1,52 @@
+{% extends 'inventario/base.html' %}
+
+{% block title %}Productos - Sistema de Inventario Celio{% endblock %}
+
+<!-- Activamos esta pestaña en el menú lateral -->
+{% block active_productos %}active{% endblock %}
+
+{% block content %}
+<div class="header-section">
+    <h2 class="page-title">Gestión de Productos</h2>
+    <a href="{% url 'inventario:agregar_producto' %}" class="btn-add" style="background-color: #0d6efd; color: white; text-decoration: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; transition: 0.3s;">➕ Agregar Producto</a>
+</div>
+
+<div class="data-card">
+    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Tipo</th>
+                <th>Marca</th>
+                <th>Precio Costo</th>
+                <th>Precio Venta</th>
+                <th>Stock Disponible</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for producto in productos %}
+            <tr>
+                <td style="font-weight: bold;">{{ producto.nombre }}</td>
+                <td><span class="badge badge-secondary">{{ producto.get_tipo_display }}</span></td>
+                <td>{{ producto.marca.nombre }}</td>
+                <td>L. {{ producto.precio_compra }}</td>
+                <td style="font-weight: 600; color: #198754;">L. {{ producto.precio_venta }}</td>
+                <td>
+                    {% if producto.stock < 5 %}
+                        <span class="badge badge-danger">Bajo Stock ({{ producto.stock }})</span>
+                    {% else %}
+                        <span class="badge badge-success">{{ producto.stock }} unidades</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" style="text-align: center; color: #777; padding: 30px 0;">
+                    No hay productos en la base de datos. ¡Haz clic en Agregar Producto!
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -2,75 +2,95 @@
 
 {% block title %}Nuevo Producto - Inventario Celio{% endblock %}
 
+{% block active_productos %}active{% endblock %}
+
 {% block content %}
-<div class="data-card" style="max-width: 680px; margin: 20px auto; background: #ffffff; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); padding: 40px; border: 1px solid #edf2f7;">
+<div style="width: 100%;">
     
-    <div style="margin-bottom: 30px; border-bottom: 1px solid #edf2f7; padding-bottom: 15px;">
-        <h2 style="font-size: 1.6rem; color: #1a202c; font-weight: 700; letter-spacing: -0.5px;">📦 Registrar Artículo Deportivo</h2>
-        <p style="font-size: 0.9rem; color: #718096; margin-top: 5px;">Ingresa las especificaciones del nuevo producto para sincronizarlo con PostgreSQL.</p>
+    <!-- ENCABEZADO SUPERIOR -->
+    <div class="header-section" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+        <div>
+            <h2 style="font-size: 1.75rem; font-weight: 600; color: #2d3748; margin: 0; letter-spacing: -0.5px;">📦 Gestión de Productos</h2>
+        </div>
+        <div style="font-size: 0.9rem; color: #718096; font-weight: 500;">
+            🏠 Inicio &gt; Productos &gt; <span style="color: #a0aec0;">Nuevo</span>
+        </div>
     </div>
-    
-    <form method="POST" style="display: flex; flex-direction: column; gap: 24px;">
-        {% csrf_token %}           
+
+    <!-- TARJETA DEL FORMULARIO PREMIUM -->
+    <div class="data-card" style="background: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03); border-top: 4px solid #3c8dbc; padding: 35px; max-width: 750px; margin: 0 auto; border-left: 1px solid #edf2f7; border-right: 1px solid #edf2f7; border-bottom: 1px solid #edf2f7;">
         
-        <!-- Campo: Nombre -->
-        <div style="display: flex; flex-direction: column; gap: 6px;">
-            <label style="font-size: 0.85rem; font-weight: 600; color: #4a5568; text-transform: uppercase; letter-spacing: 0.5px;">Nombre del Producto</label>
-            <input type="text" name="nombre" class="form-control" style="height: 46px; border: 1px solid #e2e8f0; border-radius: 10px; padding: 0 16px; font-size: 0.95rem; transition: all 0.2s;" placeholder="Ej: Tenis Air Max 90, Faja Confort" required>
+        <div style="margin-bottom: 25px; border-bottom: 1px solid #edf2f7; padding-bottom: 15px;">
+            <h3 style="font-size: 1.35rem; color: #1a202c; font-weight: 600; margin: 0;">Registrar Nuevo Artículo Deportivo</h3>
+            <p style="font-size: 0.88rem; color: #718096; margin-top: 4px;">Completa los campos para añadir la prenda o calzado a la base de datos de PostgreSQL.</p>
         </div>
+        
+        <form method="POST" style="display: flex; flex-direction: column; gap: 20px;">
+            {% csrf_token %}           
+            
+            <!-- Campo: Descripción -->
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+                <label style="font-size: 0.85rem; font-weight: 600; color: #4a5568; text-transform: uppercase; letter-spacing: 0.5px;">Nombre del Producto / Descripción</label>
+                <input type="text" name="nombre" class="form-control" placeholder="Ej: Camisa Real Madrid local 2026, Tenis Nike Air Max" required 
+                       style="height: 44px; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 14px; font-size: 0.95rem; outline: none; transition: border-color 0.2s; width: 100%;">
+            </div>
 
-        <!-- Campo: Tipo -->
-        <div style="display: flex; flex-direction: column; gap: 6px;">
-            <label style="font-size: 0.85rem; font-weight: 600; color: #4a5568; text-transform: uppercase; letter-spacing: 0.5px;">Tipo de Producto</label>
-            <select name="tipo" class="form-control" style="height: 46px; border: 1px solid #e2e8f0; border-radius: 10px; padding: 0 16px; font-size: 0.95rem; background-color: #fff;" required>
-                <option value="ROPA">👕 Ropa Deportiva / Casual</option>
-                <option value="CALZADO">👟 Calzado (Tenis, Tacos, Burros)</option>
-                <option value="ACCESORIO">🎒 Accesorios (Lociones, Fajas, Mochilas)</option>
-            </select>
-        </div>
-
-        <!-- Fila: Marca y Categoría -->
-        <div style="display: flex; gap: 20px;">
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
-                <label style="font-size: 0.85rem; font-weight: 600; color: #4a5568; text-transform: uppercase; letter-spacing: 0.5px;">Marca</label>
-                <select name="marca" class="form-control" style="height: 46px; border: 1px solid #e2e8f0; border-radius: 10px; padding: 0 16px; font-size: 0.95rem; background-color: #fff;" required>
-                    {% for marca in marcas %}
-                        <option value="{{ marca.id }}">{{ marca.nombre|upper }}</option>
-                    {% endfor %}
+            <!-- Fila: Tipo -->
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+                <label style="font-size: 0.85rem; font-weight: 600; color: #4a5568; text-transform: uppercase; letter-spacing: 0.5px;">Tipo de Producto</label>
+                <select name="tipo" class="form-control" required style="background-color: #fff; height: 44px; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 14px; font-size: 0.95rem; width: 100%; cursor: pointer;">
+                    <option value="CALZADO">👟 Calzado (Tenis, Tacos, Burros, Crossfit)</option>
+                    <option value="ROPA">👕 Ropa Deportiva / Casual</option>
+                    <option value="ACCESORIO">🎒 Accesorios (Lociones, Fajas, Mochilas)</option>
                 </select>
             </div>
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
-                <label style="font-size: 0.85rem; font-weight: 600; color: #4a5568; text-transform: uppercase; letter-spacing: 0.5px;">Categoría</label>
-                <select name="categoria" class="form-control" style="height: 46px; border: 1px solid #e2e8f0; border-radius: 10px; padding: 0 16px; font-size: 0.95rem; background-color: #fff;" required>
-                    {% for categoria in categorias %}
-                        <option value="{{ categoria.id }}">{{ categoria.nombre|title }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-        </div>
 
-        <!-- Fila: Costos y Stock -->
-        <div style="display: flex; gap: 16px; width: 100%;">
-            <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
-                <label style="font-size: 0.85rem; font-weight: 600; color: #4a5568; text-transform: uppercase; letter-spacing: 0.5px;">Costo (Compra)</label>
-                <input type="number" step="0.01" name="precio_compra" class="form-control" style="height: 46px; border: 1px solid #e2e8f0; border-radius: 10px; padding: 0 16px; font-size: 0.95rem; width: 100%;" placeholder="L. 0.00" required>
+            <!-- Fila Paralela: Marca y Categoría -->
+            <div style="display: flex; gap: 20px; width: 100%;">
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                    <label style="font-size: 0.85rem; font-weight: 600; color: #4a5568; text-transform: uppercase; letter-spacing: 0.5px;">Marca</label>
+                    <select name="marca" class="form-control" required style="background-color: #fff; height: 44px; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 14px; font-size: 0.95rem; width: 100%; cursor: pointer;">
+                        {% for marca in marcas %}
+                            <option value="{{ marca.id }}">{{ marca.nombre|upper }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                    <label style="font-size: 0.85rem; font-weight: 600; color: #4a5568; text-transform: uppercase; letter-spacing: 0.5px;">Categoría</label>
+                    <select name="categoria" class="form-control" required style="background-color: #fff; height: 44px; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 14px; font-size: 0.95rem; width: 100%; cursor: pointer;">
+                        {% for categoria in categorias %}
+                            <option value="{{ categoria.id }}">{{ categoria.nombre|title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
-            <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
-                <label style="font-size: 0.85rem; font-weight: 600; color: #4a5568; text-transform: uppercase; letter-spacing: 0.5px;">Precio Venta</label>
-                <input type="number" step="0.01" name="precio_venta" class="form-control" style="height: 46px; border: 1px solid #e2e8f0; border-radius: 10px; padding: 0 16px; font-size: 0.95rem; font-weight: 600; color: #2b6cb0; width: 100%;" placeholder="L. 0.00" required>
-            </div>
-            <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
-                <label style="font-size: 0.85rem; font-weight: 600; color: #4a5568; text-transform: uppercase; letter-spacing: 0.5px;">Stock Inicial</label>
-                <input type="number" name="stock" class="form-control" style="height: 46px; border: 1px solid #e2e8f0; border-radius: 10px; padding: 0 16px; font-size: 0.95rem; width: 100%;" placeholder="0" required>
-            </div>
-        </div>
 
+            <!-- Fila Paralela: Precios y Stock -->
+            <div style="display: flex; gap: 20px; width: 100%;">
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                    <label style="font-size: 0.85rem; font-weight: 600; color: #4a5568; text-transform: uppercase; letter-spacing: 0.5px;">Precio Compra (Costo)</label>
+                    <input type="number" step="0.01" name="precio_compra" class="form-control" placeholder="L. 0.00" required 
+                           style="height: 44px; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 14px; font-size: 0.95rem; width: 100%;">
+                </div>
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                    <label style="font-size: 0.85rem; font-weight: 600; color: #4a5568; text-transform: uppercase; letter-spacing: 0.5px;">Precio Venta</label>
+                    <input type="number" step="0.01" name="precio_venta" class="form-control" placeholder="L. 0.00" required 
+                           style="height: 44px; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 14px; font-size: 0.95rem; font-weight: 600; color: #16a34a; width: 100%;">
+                </div>
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                    <label style="font-size: 0.85rem; font-weight: 600; color: #4a5568; text-transform: uppercase; letter-spacing: 0.5px;">Stock Inicial</label>
+                    <input type="number" name="stock" class="form-control" placeholder="0" required 
+                           style="height: 44px; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 14px; font-size: 0.95rem; width: 100%;">
+                </div>
+            </div>
 
-        <!-- Botones de Acción Modernos -->
-        <div style="display: flex; gap: 16px; margin-top: 15px; border-top: 1px solid #edf2f7; padding-top: 25px;">
-            <button type="submit" style="flex: 2; height: 48px; background: #0d6efd; color: white; border: none; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: background 0.2s; box-shadow: 0 4px 12px rgba(13,110,253,0.2);">💾 Guardar en Inventario</button>
-            <a href="{% url 'inventario:productos_list' %}" style="flex: 1; height: 48px; background: #f7fafc; color: #4a5568; text-decoration: none; border: 1px solid #e2e8f0; border-radius: 12px; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; transition: background 0.2s;">Cancelar</a>
-        </div>
-    </form>
+            <!-- Botones de Acción Modificados para verse profesionales -->
+            <div style="display: flex; gap: 15px; margin-top: 20px; border-top: 1px solid #edf2f7; padding-top: 25px;">
+                <button type="submit" style="background-color: #3c8dbc; color: white; flex: 2; height: 46px; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; border: none; box-shadow: 0 2px 4px rgba(60,141,188,0.15); transition: background-color 0.2s;">💾 Guardar en Inventario</button>
+                <a href="{% url 'inventario:productos_list' %}" style="background-color: #64748b; color: white; flex: 1; height: 46px; border-radius: 8px; font-weight: 600; font-size: 1rem; text-decoration: none; display: flex; align-items: center; justify-content: center; transition: background-color 0.2s;">Cancelar</a>
+            </div>
+        </form>
+    </div>
 </div>
-{% endblock %}
+{% endblock content %}
+

@@ -35,7 +35,7 @@ from django.shortcuts import render, redirect
 
 def agregar_producto_vista(request):
     if request.method == 'POST':
-        # Captura los datos digitados en tu formulario
+        # Captura segura de los datos desde las etiquetas name de la plantilla HTML
         nombre = request.POST.get('nombre')
         tipo = request.POST.get('tipo')
         marca_id = request.POST.get('marca')
@@ -44,7 +44,7 @@ def agregar_producto_vista(request):
         precio_venta = request.POST.get('precio_venta')
         stock = request.POST.get('stock')
 
-        # 1. Crea y guarda el producto de forma directa en Postgres
+        # 1. Inserción directa vinculando las llaves foráneas a las marcas/categorías de Postgres
         nuevo_producto = Producto.objects.create(
             nombre=nombre,
             tipo=tipo,
@@ -55,7 +55,7 @@ def agregar_producto_vista(request):
             stock=stock
         )
 
-        # 2. AUTOMATIZACIÓN: Crea automáticamente el registro de entrada en el Kardex
+        # 2. Automatización del Kardex: Genera la Entrada de Inventario Inicial asociada
         HistorialStock.objects.create(
             producto=nuevo_producto,
             tipo='ENTRADA',
@@ -65,7 +65,7 @@ def agregar_producto_vista(request):
 
         return redirect('inventario:productos_list')
 
-    # Si es una consulta normal, carga las listas desplegables
+    # Al cargar la pantalla limpia, enviamos los catálogos para llenar las opciones select
     contexto = {
         'marcas': Marca.objects.all(),
         'categorias': Categoria.objects.all()
@@ -90,3 +90,49 @@ def categorias_list(request):
 def movimientos_list(request):
     movimientos = HistorialStock.objects.all().order_by('-fecha')
     return render(request, 'inventario/movimientos.html', {'movimientos': movimientos})
+
+from django.shortcuts import render, redirect, get_object_or_404
+
+# VISTA PARA EDITAR UN PRODUCTO EXISTENTE
+def editar_producto_vista(request, pk):
+    producto = get_object_or_404(Producto, pk=pk)
+    
+    if request.method == 'POST':
+        producto.nombre = request.POST.get('nombre')
+        producto.tipo = request.POST.get('tipo')
+        producto.marca_id = request.POST.get('marca')
+        producto.categoria_id = request.POST.get('categoria')
+        producto.precio_compra = request.POST.get('precio_compra')
+        producto.precio_venta = request.POST.get('precio_venta')
+        
+        # Guardamos el stock viejo para comparar si hubo cambios manuales
+        stock_nuevo = int(request.POST.get('stock'))
+        diferencia = stock_nuevo - producto.stock
+        
+        if diferencia != 0:
+            tipo_mov = 'ENTRADA' if diferencia > 0 else 'SALIDA'
+            HistorialStock.objects.create(
+                producto=producto,
+                tipo=tipo_mov,
+                cantidad=abs(diferencia),
+                motivo="Ajuste manual al editar especificaciones del producto"
+            )
+        
+        producto.stock = stock_nuevo
+        producto.save()
+        return redirect('inventario:productos_list')
+
+    contexto = {
+        'producto': producto,
+        'marcas': Marca.objects.all(),
+        'categorias': Categoria.objects.all()
+    }
+    # Usará el mismo formulario de agregar, adaptado para edición
+    return render(request, 'inventario/agregar_producto.html', contexto)
+
+
+# VISTA PARA ELIMINAR UN PRODUCTO DEFINITIVAMENTE
+def eliminar_producto_vista(request, pk):
+    producto = get_object_or_404(Producto, pk=pk)
+    producto.delete()
+    return redirect('inventario:productos_list')

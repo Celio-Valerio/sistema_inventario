@@ -5,7 +5,9 @@ app_name = 'inventario'
 
 urlpatterns = [
     # Panel principal
-    path('dashboard/', views.dashboard_vista, name='dashboard'),
+    # Cambia la línea de 'dashboard/' por esta:
+    path('', views.dashboard_vista, name='dashboard'),
+
     
     # Módulo de Productos
     path('productos/', views.lista_productos_vista, name='productos_list'),

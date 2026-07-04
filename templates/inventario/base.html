@@ -6,22 +6,38 @@
     <title>{% block title %}Sistema de Inventario Celio{% endblock %}</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: #f4f6f9; color: #333; }
-        .navbar { background-color: #212529; color: #fff; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .navbar-brand { font-size: 1.25rem; font-weight: bold; text-decoration: none; color: #fff; }
-        .container { display: flex; padding: 30px; gap: 30px; }
-        .sidebar { width: 20%; background: #fff; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); overflow: hidden; height: fit-content; }
-        .list-group-item { display: block; padding: 12px 20px; color: #495057; text-decoration: none; border-bottom: 1px solid #dee2e6; transition: 0.3s; }
-        .list-group-item:hover { background-color: #f8f9fa; color: #0d6efd; }
-        .list-group-item.active { background-color: #0d6efd; color: #fff; font-weight: bold; }
-        .main-content { width: 80%; }
         
-        /* Estilos comunes compartidos */
+        /* Forzamos a que el fondo de la pantalla ocupe el alto completo de la ventana */
+        html, body { height: 100%; background-color: #f4f6f9; color: #333; display: flex; flex-direction: column; margin: 0; padding: 0; }
+        
+        /* 🖤 NAVBAR SUPERIOR OSCURA */
+        .navbar { background-color: #1a1d20; color: #fff; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.15); width: 100%; position: fixed; top: 0; left: 0; z-index: 1000; height: 55px; }
+        .navbar-brand { font-size: 1.25rem; font-weight: bold; text-decoration: none; color: #fff; }
+        
+        /* Estructura dividida en dos columnas completas hasta abajo */
+        .wrapper { display: flex; flex: 1; margin-top: 55px; height: calc(100vh - 55px); width: 100%; }
+        
+        /* 🖤 SIDEBAR LATERAL COMPLETAMENTE NEGRO/GRIS OSCURO HASTA EL FONDO DE LA PÁGINA */
+        .sidebar { width: 240px; background: #222d32; box-shadow: 2px 0 5px rgba(0,0,0,0.1); height: 100%; padding-top: 15px; position: fixed; left: 0; bottom: 0; top: 55px; z-index: 999; }
+        
+        /* Botones del menú en estado normal (Texto claro sobre fondo oscuro) */
+        .list-group-item { display: block; padding: 14px 22px; color: #b8c7ce; text-decoration: none; border-bottom: 1px solid #1a2226; transition: 0.3s; font-size: 0.95rem; font-weight: 500; }
+        
+        /* Efecto al pasar el mouse por encima de las opciones */
+        .list-group-item:hover { background-color: #1e282c; color: #fff; border-left: 4px solid #3c8dbc; }
+        
+        /* Pestaña activa (Azul de tu diseño) */
+        .list-group-item.active { background-color: #3c8dbc; color: #fff; font-weight: bold; border-left: 4px solid #3c8dbc; }
+        
+        /* ⬜ ÁREA DE CONTENIDO BLANCA AJUSTADA A LA DERECHA */
+        .main-content { flex: 1; padding: 30px; margin-left: 240px; background-color: #f4f6f9; overflow-y: auto; height: 100%; width: calc(100% - 240px); }
+        
+        /* Estilos comunes compartidos para las tarjetas internas */
         .header-section { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         .page-title { font-size: 1.75rem; color: #495057; font-weight: 600; }
         .data-card { background: #fff; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); padding: 25px; }
         
-        /* Badges de tu diseño */
+        /* Badges redondeados */
         .badge { display: inline-block; padding: 5px 10px; font-size: 0.75rem; font-weight: bold; border-radius: 50px; }
         .badge-success { background-color: #d1e7dd; color: #0f5132; }
         .badge-danger { background-color: #f8d7da; color: #842029; }
@@ -31,29 +47,31 @@
 </head>
 <body>
 
+    <!-- BARRA SUPERIOR -->
     <nav class="navbar">
-        <a class="navbar-brand" href="{% url 'inventario:dashboard' %}">📦 Inventario Celio</a>
+        <a class="navbar-brand" href="{% url 'inventario:dashboard' %}">📦 Inventory SYSTEM</a>
         <div>👤 Administrador</div>
     </nav>
 
-    <div class="container">
-        <!-- Menú Lateral Dinámico y Fijo -->
-        <div class="sidebar">
-            <a href="{% url 'inventario:dashboard' %}" class="list-group-item {% block active_dashboard %}{% endblock %}">📊 Dashboard</a>
+    <!-- CONTENEDOR EN DOS COLUMNAS -->
+    <div class="wrapper">
+        
+        <!-- BARRA LATERAL OSCURA FIJA HASTA ABAJO -->
+        <aside class="sidebar">
+            <a href="{% url 'inventario:dashboard' %}" class="list-group-item {% block active_dashboard %}{% endblock %}">🏠 Inicio</a>
             <a href="{% url 'inventario:productos_list' %}" class="list-group-item {% block active_productos %}{% endblock %}">👟 Productos</a>
             <a href="{% url 'inventario:marcas_list' %}" class="list-group-item {% block active_marcas %}{% endblock %}">🏷️ Marcas</a>
             <a href="{% url 'inventario:categorias_list' %}" class="list-group-item {% block active_categorias %}{% endblock %}">🗂️ Categorías</a>
             <a href="{% url 'inventario:movimientos_list' %}" class="list-group-item {% block active_movimientos %}{% endblock %}">🔄 Movimientos</a>
-        </div>
+        </aside>
 
-        <!-- Contenido Dinámico -->
-        <div class="main-content">
+        <!-- ESPACIO DE LAS PÁGINAS DINÁMICAS (DERECHA) -->
+        <main class="main-content">
             {% block content %}
             {% endblock %}
-        </div>
+        </main>
+
     </div>
 
 </body>
 </html>
-
-

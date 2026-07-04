@@ -2,51 +2,121 @@
 
 {% block title %}Productos - Sistema de Inventario Celio{% endblock %}
 
-<!-- Activamos esta pestaña en el menú lateral -->
 {% block active_productos %}active{% endblock %}
 
 {% block content %}
-<div class="header-section">
-    <h2 class="page-title">Gestión de Productos</h2>
-    <a href="{% url 'inventario:agregar_producto' %}" class="btn-add" style="background-color: #0d6efd; color: white; text-decoration: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; transition: 0.3s;">➕ Agregar Producto</a>
+<div style="width: 100%;">
+    
+    <!-- ENCABEZADO -->
+    <div class="header-section" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+        <div>
+            <h2 style="font-size: 1.75rem; font-weight: 500; color: #333; margin: 0;">Administrar productos</h2>
+        </div>
+        <div style="font-size: 0.9rem; color: #666;">
+            🏠 Inicio &gt; <span style="color: #999;">Administrar productos</span>
+        </div>
+    </div>
+
+    <!-- SECCIÓN SUPERIOR: BOTÓN Y BUSCADOR ALINEADOS -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <a href="{% url 'inventario:agregar_producto' %}" style="background-color: #3c8dbc; color: white; text-decoration: none; padding: 8px 16px; border-radius: 4px; font-size: 0.9rem; font-weight: 500; box-shadow: 0 1px 1px rgba(0,0,0,0.1); display: inline-block;">Agregar producto</a>
+        
+        <!-- 🔍 CUADRO DE BÚSQUEDA INTERACTIVO -->
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <label style="font-size: 0.9rem; color: #555; font-weight: 500;">Buscar:</label>
+            <input type="text" id="buscador-global" onkeyup="filtrarTabla()" placeholder="Código, descripción o categoría..." style="padding: 6px 12px; border: 1px solid #ced4da; border-radius: 4px; font-size: 0.9rem; width: 260px; outline: none;">
+        </div>
+    </div>
+
+    <!-- TARJETA CONTENEDORA DE LA TABLA -->
+    <div class="data-card" style="background: #fff; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-top: 3px solid #3c8dbc; padding: 20px; overflow-x: auto;">
+        
+        <table id="tabla-productos" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+            <thead>
+                <tr style="border-bottom: 2px solid #f4f4f4; color: #333;">
+                    <th style="padding: 10px 5px; width: 40px;">#</th>
+                    <th style="padding: 10px 5px;">Imagen</th>
+                    <th style="padding: 10px 5px;">Código</th>
+                    <th style="padding: 10px 5px;">Descripción</th>
+                    <th style="padding: 10px 5px;">Categoría</th>
+                    <th style="padding: 10px 5px; text-align: center;">Stock</th>
+                    <th style="padding: 10px 5px;">Precio de compra</th>
+                    <th style="padding: 10px 5px;">Precio de venta</th>
+                    <th style="padding: 10px 5px; text-align: center; width: 110px;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for producto in productos %}
+                <tr class="fila-producto" style="border-bottom: 1px solid #f4f4f4; height: 50px;">
+                    <td style="padding: 10px 5px; color: #666;">{{ forloop.counter }}</td>
+                    
+                    <td style="padding: 10px 5px; font-size: 1.4rem;">
+                        {% if producto.tipo == 'CALZADO' %}👟{% elif producto.tipo == 'ROPA' %}👕{% else %}🎒{% endif %}
+                    </td>
+                    
+                    <!-- Código celda -->
+                    <td class="buscar-codigo" style="padding: 10px 5px; color: #444; font-weight: 500;">500{{ producto.id }}</td>
+                    
+                    <!-- Descripción celda -->
+                    <td class="buscar-desc" style="padding: 10px 5px; font-weight: 500; color: #333;">{{ producto.nombre }}</td>
+                    
+                    <!-- Categoría celda -->
+                    <td class="buscar-cat" style="padding: 10px 5px; color: #666;">{{ producto.categoria.nombre|title }}</td>
+                    
+                    <td style="padding: 10px 5px; text-align: center;">
+                        {% if producto.stock <= 5 %}
+                            <span style="background-color: #dd4b39; color: white; padding: 3px 8px; border-radius: 3px; font-size: 0.8rem; font-weight: bold;">{{ producto.stock }}</span>
+                        {% elif producto.stock <= 15 %}
+                            <span style="background-color: #f39c12; color: white; padding: 3px 8px; border-radius: 3px; font-size: 0.8rem; font-weight: bold;">{{ producto.stock }}</span>
+                        {% else %}
+                            <span style="background-color: #00a65a; color: white; padding: 3px 8px; border-radius: 3px; font-size: 0.8rem; font-weight: bold;">{{ producto.stock }}</span>
+                        {% endif %}
+                    </td>
+                    
+                    <td style="padding: 10px 5px; color: #444;">{{ producto.precio_compra }}</td>
+                    <td style="padding: 10px 5px; color: #444; font-weight: 600;">{{ producto.precio_venta }}</td>
+                    
+                    <td style="padding: 10px 5px; text-align: center;">
+                        <a href="{% url 'inventario:editar_producto' producto.pk %}" style="background: #f39c12; color: white; border: none; padding: 6px 10px; border-radius: 3px; cursor: pointer; margin-right: 4px; font-size: 0.85rem; text-decoration: none; display: inline-block;">✏️</a>
+                        <a href="{% url 'inventario:eliminar_producto' producto.pk %}" onclick="return confirm('¿Estás seguro de que deseas eliminar este producto definitivamente del inventario?');" style="background: #dd4b39; color: white; border: none; padding: 6px 10px; border-radius: 3px; cursor: pointer; font-size: 0.85rem; text-decoration: none; display: inline-block;">❌</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" style="text-align: center; color: #999; padding: 30px 0;">No hay productos en la base de datos.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <div style="display: flex; justify-content: space-between; margin-top: 20px; font-size: 0.85rem; color: #666;">
+            <div>Mostrando registros del 1 al {{ productos.count }} de un total de {{ productos.count }}</div>
+        </div>
+
+    </div>
 </div>
 
-<div class="data-card">
-    <table style="width: 100%; border-collapse: collapse; text-align: left;">
-        <thead>
-            <tr>
-                <th>Producto</th>
-                <th>Tipo</th>
-                <th>Marca</th>
-                <th>Precio Costo</th>
-                <th>Precio Venta</th>
-                <th>Stock Disponible</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for producto in productos %}
-            <tr>
-                <td style="font-weight: bold;">{{ producto.nombre }}</td>
-                <td><span class="badge badge-secondary">{{ producto.get_tipo_display }}</span></td>
-                <td>{{ producto.marca.nombre }}</td>
-                <td>L. {{ producto.precio_compra }}</td>
-                <td style="font-weight: 600; color: #198754;">L. {{ producto.precio_venta }}</td>
-                <td>
-                    {% if producto.stock < 5 %}
-                        <span class="badge badge-danger">Bajo Stock ({{ producto.stock }})</span>
-                    {% else %}
-                        <span class="badge badge-success">{{ producto.stock }} unidades</span>
-                    {% endif %}
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="6" style="text-align: center; color: #777; padding: 30px 0;">
-                    No hay productos en la base de datos. ¡Haz clic en Agregar Producto!
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-{% endblock %}
+<!-- 🧠 LÓGICA DE FILTRADO ULTRA RÁPIDO EN TIEMPO REAL -->
+<script>
+function filtrarTabla() {
+    var input = document.getElementById("buscador-global");
+    var filter = input.value.toLowerCase();
+    var filas = document.getElementsByClassName("fila-producto");
+
+    for (var i = 0; i < filas.length; i++) {
+        var codigo = filas[i].getElementsByClassName("buscar-codigo")[0].innerText.toLowerCase();
+        var descripcion = filas[i].getElementsByClassName("buscar-desc")[0].innerText.toLowerCase();
+        var categoria = filas[i].getElementsByClassName("buscar-cat")[0].innerText.toLowerCase();
+
+        // Si coincide con el código, descripción o categoría, muestra la fila; si no, la oculta
+        if (codigo.includes(filter) || descripcion.includes(filter) || categoria.includes(filter)) {
+            filas[i].style.display = "";
+        } else {
+            filas[i].style.display = "none";
+        }
+    }
+}
+</script>
+{% endblock content %}
+
+

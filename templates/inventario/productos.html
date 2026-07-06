@@ -7,14 +7,12 @@
 {% block content %}
 <div style="width: 100%;">
     
-    <!-- ENCABEZADO -->
+       <!-- ENCABEZADO -->
     <div class="header-section" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
         <div>
             <h2 style="font-size: 1.75rem; font-weight: 500; color: #333; margin: 0;">Administrar productos</h2>
         </div>
-        <div style="font-size: 0.9rem; color: #666;">
-            🏠 Inicio &gt; <span style="color: #999;">Administrar productos</span>
-        </div>
+        <!-- Se eliminaron las migas de pan (Inicio > Administrar productos) de este contenedor -->
     </div>
 
     <!-- SECCIÓN SUPERIOR: BOTÓN Y BUSCADOR ALINEADOS -->
@@ -24,9 +22,10 @@
         <!-- 🔍 CUADRO DE BÚSQUEDA INTERACTIVO -->
         <div style="display: flex; align-items: center; gap: 8px;">
             <label style="font-size: 0.9rem; color: #555; font-weight: 500;">Buscar:</label>
-            <input type="text" id="buscador-global" onkeyup="filtrarTabla()" placeholder="Código, descripción o categoría..." style="padding: 6px 12px; border: 1px solid #ced4da; border-radius: 4px; font-size: 0.9rem; width: 260px; outline: none;">
+            <input type="text" id="buscador-global" onkeyup="filtrarTabla()" maxlength="20" placeholder="Código, descripción o categoría..." style="padding: 6px 12px; border: 1px solid #ced4da; border-radius: 4px; font-size: 0.9rem; width: 260px; outline: none;">
         </div>
     </div>
+
 
     <!-- TARJETA CONTENEDORA DE LA TABLA -->
     <div class="data-card" style="background: #fff; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-top: 3px solid #3c8dbc; padding: 20px; overflow-x: auto;">
